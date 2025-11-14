@@ -12,10 +12,9 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
-# Example schemas (replace with your own):
-
+# Example schemas (kept for reference)
 class User(BaseModel):
     """
     Users collection schema
@@ -38,11 +37,23 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# Study assistant schemas
+class MemoryNote(BaseModel):
+    """
+    Notes and facts saved by the user for long-term recall.
+    Collection name: "memorynote"
+    """
+    content: str = Field(..., description="The text to remember (any language)")
+    language: Optional[str] = Field(None, description="ISO code or language name if known")
+    tags: List[str] = Field(default_factory=list, description="Optional tags like 'math', 'history'")
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class ConversationTurn(BaseModel):
+    """
+    A single conversational exchange for history.
+    Collection name: "conversationturn"
+    """
+    role: str = Field(..., description="'user' or 'assistant'")
+    text: str = Field(..., description="Message content (any language)")
+    session_id: Optional[str] = Field(None, description="Client-provided session identifier")
+    language: Optional[str] = Field(None, description="Language of the message if known")
+
